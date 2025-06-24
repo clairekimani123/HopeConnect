@@ -85,6 +85,7 @@ To run the frontend in development mode:
 ```bash
 npm start
 
+```
 
 
 ##Project Structure##
