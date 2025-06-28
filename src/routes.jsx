@@ -7,6 +7,8 @@ import LoginPage from "./pages/LoginPage";
 import ProjectsPage from "./pages/Projects";
 import RegisterPage from "./pages/Register";
 import SuperAdminPage from "./pages/Superadmin";
+import ProtectedRoute from "./components/ProtectedRoute";
+import SuperAdminRoute from "./components/SuperadminRoute";
 
 const routes = [
   {
@@ -19,7 +21,11 @@ const routes = [
   },
   {
     path: "/admin",
-    element:<SuperAdminPage />,
+    element: (
+      <SuperAdminRoute>
+        <SuperAdminPage />
+      </SuperAdminRoute>
+    ),
   },
   {
     path: "/",
@@ -39,7 +45,11 @@ const routes = [
       },
       {
         path: "/donate",
-        element: <DonatePage />
+        element: (
+          <ProtectedRoute>
+            <DonatePage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/contact",
