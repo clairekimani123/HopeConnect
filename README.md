@@ -98,12 +98,12 @@ Frontend/
 │   │   ├── images/
 │   │   ├── css/ (tailwindcss been used)
 │   ├── components/
-│   │   ├── NavBar/ (e.g., Button, InputField, Navbar, Footer)
-│   │   ├── auth/ (e.g., GoogleLoginButton)
-│   │   ├── donations/ (e.g., DonationForm, DonationCard we can have one in the right and the other one in the left)
-│   │   ├── volunteers/ (e.g., VolunteerSignUpForm)
-│   │   └── ProjectView/ (e.g., ImpactStoryCard)
-│   ├── hooks/
+│   │   ├── Footer.jsx
+│   │   ├── Footer.jsx
+│   │   ├── 
+│   │   ├── 
+│   │   └──
+│   ├── 
 │   │   ├── useAuth.js
 │   │   └── useFormValidation.js
 │   ├── pages/
