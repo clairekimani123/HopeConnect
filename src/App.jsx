@@ -1,17 +1,18 @@
-import { useState } from 'react'
+import { Outlet, useNavigate } from "react-router"
+import Footer from "./components/Footer"
+import Navbar from "./components/Navbar"
+import { useEffect, useState } from "react"
 
-import './App.css'
-
-function App() {
- 
+function App() { 
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   return (
     <>
-      <div>
-       
-      </div>
-     
-     
+    <Navbar isLoggedIn ={isLoggedIn}/>
+    <main>
+      <Outlet context={{setIsLoggedIn, projects}}/>
+    </main>
+    <Footer/>
     </>
   )
 }
