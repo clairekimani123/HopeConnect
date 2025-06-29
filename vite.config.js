@@ -8,4 +8,11 @@ export default defineConfig({
     tailwindcss(),
     react()
   ],
+  server: {
+    middlewareMode: false,
+    headers: {
+      'Cross-Origin-Opener-Policy': 'unsafe-none'
+    }
+  }
+
 })

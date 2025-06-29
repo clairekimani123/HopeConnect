@@ -13,7 +13,7 @@ function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const {  loginWithGoogle } = useAuth()
+  const {  loginWithGoogle, signInWithRedirect } = useAuth()
   const navigate = useNavigate()
 
 
@@ -29,7 +29,7 @@ function RegisterPage() {
         }
         
     try {
-        const response = await fetch('https://hope-connect-backend-1-9syn.onrender.com/auth/register', {
+        const response = await fetch('http://localhost:5555/auth/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -39,7 +39,7 @@ function RegisterPage() {
 
       if (response.ok) {
         const data = await response.json(); 
-        console.log('Registration successful:', data);
+        localStorage.setItem("user", data)
         navigate("/login"); 
       } else {
           const errorData = await response.json();

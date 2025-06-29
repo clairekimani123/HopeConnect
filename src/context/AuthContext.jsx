@@ -12,10 +12,10 @@ export const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         try {
-          const res = await fetch("https://hope-connect-backend-1-9syn.onrender.com/auth/firebase-login", {
+          const res = await fetch("http://localhost:5555/auth/firebase-login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ mail: firebaseUser.email }),
+            body: JSON.stringify({ email: firebaseUser.email }),
           });
 
           if (!res.ok) {
@@ -53,6 +53,8 @@ export const AuthProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
+ 
+
   const loginWithGoogle = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
@@ -60,6 +62,7 @@ export const AuthProvider = ({ children }) => {
       console.error("Google login error:", err);
     }
   };
+
 
   const logout = async () => {
     try {
