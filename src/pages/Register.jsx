@@ -29,7 +29,7 @@ function RegisterPage() {
         }
         
     try {
-        const response = await fetch('http://localhost:5555/auth/register', {
+        const response = await fetch('https://hope-connect-backend-1-9syn.onrender.com/auth/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -38,15 +38,13 @@ function RegisterPage() {
         });
 
       if (response.ok) {
-        console.log(response.json())
-          
-          navigate("/");
-          localStorage.setItem("user", newUser)
+        const data = await response.json(); 
+        console.log('Registration successful:', data);
+        navigate("/login"); 
       } else {
-            alert("Account already exists")
-        console.error('Failed to create account');
-        navigate("/login")
-        }
+          const errorData = await response.json();
+          setError(errorData.message || "Registration failed"); 
+      }
     } catch (error) {
         setError(error)
         console.error('Error creating account:', error);
