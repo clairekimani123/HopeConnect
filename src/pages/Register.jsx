@@ -13,8 +13,9 @@ function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { user, loginWithGoogle } = useAuth()
+  const {  loginWithGoogle } = useAuth()
   const navigate = useNavigate()
+  const user = localStorage.getItem("user")
 
 
     useEffect(() => {
@@ -28,7 +29,7 @@ function RegisterPage() {
         const newUser = {
             fName:fName,
             lName: lName,
-            emial: email,
+            email: email,
             password:password
         }
         
@@ -42,11 +43,14 @@ function RegisterPage() {
         });
 
       if (response.ok) {
-          console.log(response.json())
-          navigate("/");
+        console.log(response.json())
           
-        } else {
-            console.error('Failed to create account');
+          navigate("/");
+          localStorage.setItem("user", newUser)
+      } else {
+            alert("Account already exists")
+        console.error('Failed to create account');
+        navigate("/login")
         }
     } catch (error) {
         setError(error)

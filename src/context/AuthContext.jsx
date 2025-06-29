@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
             role: data.role,
             access_token:data.access_token
           });
-          
+          localStorage.setItem("user", user)
 
         } catch (err) {
           console.error("Backend login failed:", err);

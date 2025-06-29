@@ -1,7 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-function HomePage() {
+function HomePage(){
+  const navigate = useNavigate()
+  const user = localStorage.getItem("user")
+
+  if (!user) {
+    navigate("/login")
+  }
   return (
     <div>
       <section className="relative h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-purple-600 to-pink-500 overflow-hidden">
