@@ -8,7 +8,7 @@ function App() {
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5555/projects')
+    fetch('https://hope-connect-backend-1-9syn.onrender.com/projects')
       .then((res) => res.json())
       .then((data) => setProjects(data))
       .catch((err) => console.error('Error fetching projects:', err));

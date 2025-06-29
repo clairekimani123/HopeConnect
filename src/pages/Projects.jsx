@@ -5,7 +5,6 @@ import ProjectCard from '../components/ProjectCard';
 function ProjectsPage() {
   
  const {projects} = useOutletContext()
-  console.log(projects)
   return (
     <div className="pt-20">
       <section className="py-16">

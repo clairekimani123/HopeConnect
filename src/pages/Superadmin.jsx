@@ -10,7 +10,7 @@ const SuperAdminPage = () => {
   const [users, setUsers] = useState([]);
   const [projects, setProjects] = useState([]);
   const [donations, setDonations] = useState([]);
-  const [eventForm, setEventForm] = useState({ type: '', description: '', date: '' });
+  const [eventForm, setEventForm] = useState({ type: '', description: '', date: '', image_url:'' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -21,7 +21,7 @@ const SuperAdminPage = () => {
     setLoading(true);
     try {
       const endpoints = { users: '/users', projects: '/projects', donations: '/donations' };
-      const res = await fetch(`http://localhost:5555${endpoints[activeTab]}`, {
+      const res = await fetch(`https://hope-connect-backend-1-9syn.onrender.com${endpoints[activeTab]}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -48,12 +48,12 @@ const SuperAdminPage = () => {
     e.preventDefault();
     setSubmitLoading(true);
     try {
-      await fetch('http://localhost:5555/projects', {
+      await fetch('https://hope-connect-backend-1-9syn.onrender.com/projects', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify(eventForm)
       });
-      setEventForm({ type: '', description: '', date: '' });
+      setEventForm({ type: '', description: '', date: '' , image_url:''});
       fetchData();
     } catch {
       setError('Failed to create event');
@@ -119,6 +119,8 @@ const SuperAdminPage = () => {
                 </div>
                 <form onSubmit={handleEventSubmit} className="space-y-4">
                   <input type="text" placeholder="Type" value={eventForm.type} onChange={e => setEventForm({ ...eventForm, type: e.target.value })} className="w-full border p-2 rounded" required />
+                  <input type="text" placeholder="Image" value={eventForm.image_url} onChange={e => setEventForm({ ...eventForm, image_url: e.target.value })} className="w-full border p-2 rounded" required />
+
                   <textarea placeholder="Description" value={eventForm.description} onChange={e => setEventForm({ ...eventForm, description: e.target.value })} className="w-full border p-2 rounded" required />
                   <input type="date" value={eventForm.date} onChange={e => setEventForm({ ...eventForm, date: e.target.value })} className="w-full border p-2 rounded" required />
                   <button type="submit" disabled={submitLoading} className="w-full bg-blue-600 text-white py-2 rounded">{submitLoading ? 'Posting...' : 'Post Event'}</button>

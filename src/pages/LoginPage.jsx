@@ -31,7 +31,7 @@ const handleSubmit = async (e) => {
   setLoading(true);
 
   try {
-    const res = await fetch('http://localhost:5555/auth/login', {
+    const res = await fetch('https://hope-connect-backend-1-9syn.onrender.com/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
