@@ -126,3 +126,9 @@ Frontend/
 ├── package.json
 ├── package-lock.json (or yarn.lock)
 └── .env (for environment variables like API base URL, Firebase config)
+
+
+##API Documentation##
+```
+apidocumentation = https://hope-connect-backend-1-9syn.onrender.com/apidocs/
+```
