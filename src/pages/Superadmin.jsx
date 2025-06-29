@@ -37,7 +37,7 @@ const SuperAdminPage = () => {
 
   const handleDeleteEvent = async (id) => {
     if (!window.confirm('Delete this event?')) return;
-    await fetch(`http://localhost:5555/projects/${id}`, {
+    await fetch(`https://hope-connect-backend-1-9syn.onrender.com/projects/${id}`, {
       method: 'DELETE',
       headers: { 'Authorization': `Bearer ${token}` }
     });
