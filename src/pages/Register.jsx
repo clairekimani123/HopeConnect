@@ -15,14 +15,9 @@ function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const {  loginWithGoogle } = useAuth()
   const navigate = useNavigate()
-  const user = localStorage.getItem("user")
 
 
-    useEffect(() => {
-      if (user) {
-      navigate('/');
-    }
-  }, [user]);
+
     
     const handleSubmit = async (e) => {
         e.preventDefault();
