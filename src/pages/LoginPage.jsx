@@ -1,146 +1,157 @@
 import React, { useState, useEffect } from 'react';
-import { FaUsers, FaCalendarAlt, FaDonate, FaTrash } from 'react-icons/fa';
-import SuperAdminNavbar from '../components/SuperadminNavbar';
+import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaGoogle, FaSignInAlt } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
-const SuperAdminPage = () => {
-  const user = JSON.parse(localStorage.getItem("user"));
-  const token = localStorage.getItem("access_token");
-
-  const [activeTab, setActiveTab] = useState('users');
-  const [users, setUsers] = useState([]);
-  const [projects, setProjects] = useState([]);
-  const [donations, setDonations] = useState([]);
-  const [eventForm, setEventForm] = useState({ type: '', description: '', date: '' });
-  const [loading, setLoading] = useState(false);
+const LoginPage = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  const [submitLoading, setSubmitLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const { user, loginWithGoogle,setUser, setToken } = useAuth();
 
-  useEffect(() => { fetchData(); }, [activeTab]);
+  const navigate = useNavigate();
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const endpoints = { users: '/users', projects: '/projects', donations: '/donations' };
-      const res = await fetch(`http://localhost:5555${endpoints[activeTab]}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await res.json();
-      if (activeTab === 'users') setUsers(data);
-      if (activeTab === 'projects') setProjects(data);
-      if (activeTab === 'donations') setDonations(data);
-    } catch {
-      setError('Failed to fetch data');
-    } finally {
-      setLoading(false);
+
+
+  useEffect(() => {
+    if (user) {
+      if (user.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
     }
-  };
+  }, [user, navigate]);
 
-  const handleDeleteEvent = async (id) => {
-    if (!window.confirm('Delete this event?')) return;
-    await fetch(`http://localhost:5555/projects/${id}`, {
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${token}` }
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError('');
+  setLoading(true);
+
+  try {
+    const res = await fetch('http://localhost:5555/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
     });
-    setProjects(projects.filter(p => p.id !== id));
-  };
 
-  const handleEventSubmit = async (e) => {
-    e.preventDefault();
-    setSubmitLoading(true);
-    try {
-      await fetch('http://localhost:5555/projects', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify(eventForm)
-      });
-      setEventForm({ type: '', description: '', date: '' });
-      fetchData();
-    } catch {
-      setError('Failed to create event');
-    } finally {
-      setSubmitLoading(false);
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.msg || 'Failed to log in');
     }
-  };
 
-  const TabButton = ({ tab, icon: Icon, count }) => (
-    <button onClick={() => setActiveTab(tab)} className={`px-4 py-2 rounded ${activeTab === tab ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}>
-      <Icon className="inline mr-2" /> {tab.charAt(0).toUpperCase() + tab.slice(1)} ({count})
-    </button>
-  );
+    const data = await res.json();
 
-  if (!user || user.role !== 'admin') {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-red-600">Access Denied</h1>
-        </div>
-      </div>
-    );
+    const userData = {
+      access_token:data.access_token,
+      email,
+      id: data.id,
+      role: data.role,
+    };
+
+    localStorage.setItem('access_token', data.access_token);
+    localStorage.setItem('user', JSON.stringify(userData));
+
+    setToken(data.access_token);
+    setUser(userData);
+
+
+  } catch (err) {
+    setError(err.message || 'Login failed');
+  } finally {
+    setLoading(false);
   }
+};
+
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <SuperAdminNavbar />
-      <div className="max-w-6xl mx-auto p-6">
-        <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
-        <div className="flex gap-4 mb-6">
-          <TabButton tab="users" icon={FaUsers} count={users.length} />
-          <TabButton tab="projects" icon={FaCalendarAlt} count={projects.length} />
-          <TabButton tab="donations" icon={FaDonate} count={donations.length} />
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 p-4">
+      <div className="p-8 md:p-12 bg-white rounded-2xl shadow-xl text-center max-w-md w-full">
+        <h1 className="font-serif text-3xl md:text-4xl text-blue-600 mb-2">Welcome to Hope Connect</h1>
+        <p className="text-gray-600 mb-8">Sign in to continue your journey of giving.</p>
 
-        {error && <div className="text-red-600 mb-4">{error}</div>}
-        {loading ? <div>Loading...</div> : (
-          <div className="bg-white p-4 rounded shadow">
-            {activeTab === 'users' && (
-              <table className="w-full">
-                <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th></tr></thead>
-                <tbody>{users.map(u => (
-                  <tr key={u.id} className="border-t">
-                    <td>{u.id}</td><td>{u.first_name} {u.last_name}</td><td>{u.email}</td><td>{u.role}</td>
-                  </tr>
-                ))}</tbody>
-              </table>
-            )}
+        {error && <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md mb-6">{error}</div>}
 
-            {activeTab === 'projects' && (
+        <form onSubmit={handleSubmit} className="space-y-4 mb-6">
+          <div className="relative">
+            <FaEnvelope className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              required
+              disabled={loading}
+              onChange={(e) => setEmail(e.target.value)}
+              className="pl-10 pr-4 py-3 border border-gray-300 rounded-md w-full focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+            />
+          </div>
+
+          <div className="relative">
+            <FaLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <input
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Password"
+              value={password}
+              required
+              disabled={loading}
+              onChange={(e) => setPassword(e.target.value)}
+              className="pl-10 pr-12 py-3 border border-gray-300 rounded-md w-full focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 w-full flex items-center justify-center gap-2 disabled:opacity-50"
+          >
+            {loading ? (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                  {projects.map(p => (
-                    <div key={p.id} className="border p-4 rounded relative">
-                      <h3 className="font-bold">{p.type}</h3>
-                      <p>{p.description}</p>
-                      <p className="text-sm text-gray-500">{p.date}</p>
-                      <button onClick={() => handleDeleteEvent(p.id)} className="absolute top-2 right-2 text-red-500">
-                        <FaTrash />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-                <form onSubmit={handleEventSubmit} className="space-y-4">
-                  <input type="text" placeholder="Type" value={eventForm.type} onChange={e => setEventForm({ ...eventForm, type: e.target.value })} className="w-full border p-2 rounded" required />
-                  <textarea placeholder="Description" value={eventForm.description} onChange={e => setEventForm({ ...eventForm, description: e.target.value })} className="w-full border p-2 rounded" required />
-                  <input type="date" value={eventForm.date} onChange={e => setEventForm({ ...eventForm, date: e.target.value })} className="w-full border p-2 rounded" required />
-                  <button type="submit" disabled={submitLoading} className="w-full bg-blue-600 text-white py-2 rounded">{submitLoading ? 'Posting...' : 'Post Event'}</button>
-                </form>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Signing In...
+              </>
+            ) : (
+              <>
+                <FaSignInAlt />
+                Sign In
               </>
             )}
+          </button>
+        </form>
 
-            {activeTab === 'donations' && (
-              <table className="w-full">
-                <thead><tr><th>ID</th><th>Group</th><th>Type</th><th>Details</th></tr></thead>
-                <tbody>{donations.map(d => (
-                  <tr key={d.id} className="border-t">
-                    <td>{d.id}</td><td>{d.group}</td><td>{d.type}</td><td>{d.type === 'money' ? `KES ${d.amount}` : d.details}</td>
-                  </tr>
-                ))}</tbody>
-              </table>
-            )}
+        <div className="relative mb-6">
+          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-300"></div></div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2 bg-white text-gray-500">Or continue with</span>
           </div>
-        )}
+        </div>
+
+        <button
+          onClick={loginWithGoogle}
+          disabled={loading}
+          className="flex items-center justify-center gap-3 bg-red-500 text-white py-3 px-6 rounded-md hover:bg-red-600 w-full disabled:opacity-50"
+        >
+          <FaGoogle />
+          Sign In with Google
+        </button>
+
+        <p className="text-gray-600 text-sm mt-4">
+          Don't have an account?{' '}
+          <button onClick={() => navigate('/register')} className="text-blue-600 hover:text-blue-700 font-medium">
+            Sign Up
+          </button>
+        </p>
       </div>
     </div>
   );
 };
 
-export default SuperAdminPage;
+export default LoginPage;

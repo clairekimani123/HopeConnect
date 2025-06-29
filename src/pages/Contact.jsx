@@ -19,14 +19,14 @@ function ContactPage(){
                         <FaMapMarkerAlt className="text-blue-600 text-2xl mt-1" />
                         <div>
                             <strong>Address:</strong><br />
-                            123 Hope Street, Nairobi, Kenya
+                             Hope Street, Nairobi, Kenya
                         </div>
                     </div>
                     <div className="flex items-start gap-4">
                         <FaEnvelope className="text-blue-600 text-2xl mt-1" />
                         <div>
                             <strong>Email:</strong><br />
-                            connect@hopeconnect.org
+                            hopeconnectorg@gmail.com
                         </div>
                     </div>
                     <div className="flex items-start gap-4">
