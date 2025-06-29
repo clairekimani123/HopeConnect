@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         try {
-          const res = await fetch("http://localhost:5555/auth/firebase-login", {
+          const res = await fetch("https://hope-connect-backend-1-9syn.onrender.com/auth/firebase-login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email: firebaseUser.email }),
