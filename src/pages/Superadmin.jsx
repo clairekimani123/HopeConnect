@@ -10,7 +10,7 @@ const SuperAdminPage = () => {
   const [users, setUsers] = useState([]);
   const [projects, setProjects] = useState([]);
   const [donations, setDonations] = useState([]);
-  const [eventForm, setEventForm] = useState({ type: '', description: '', date: '', image_url:'' });
+  const [eventForm, setEventForm] = useState({ type: '', description: '', date: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -53,6 +53,7 @@ const SuperAdminPage = () => {
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify(eventForm)
       });
+      console.log(eventForm)
       setEventForm({ type: '', description: '', date: '' , image_url:''});
       fetchData();
     } catch {
@@ -119,8 +120,7 @@ const SuperAdminPage = () => {
                 </div>
                 <form onSubmit={handleEventSubmit} className="space-y-4">
                   <input type="text" placeholder="Type" value={eventForm.type} onChange={e => setEventForm({ ...eventForm, type: e.target.value })} className="w-full border p-2 rounded" required />
-                  <input type="text" placeholder="Image" value={eventForm.image_url} onChange={e => setEventForm({ ...eventForm, image_url: e.target.value })} className="w-full border p-2 rounded" required />
-
+                  <input type="text" placeholder="Image URL" value={eventForm.image_url} onChange={e => setEventForm({ ...eventForm, image_url: e.target.value })} className="w-full border p-2 rounded" required />
                   <textarea placeholder="Description" value={eventForm.description} onChange={e => setEventForm({ ...eventForm, description: e.target.value })} className="w-full border p-2 rounded" required />
                   <input type="date" value={eventForm.date} onChange={e => setEventForm({ ...eventForm, date: e.target.value })} className="w-full border p-2 rounded" required />
                   <button type="submit" disabled={submitLoading} className="w-full bg-blue-600 text-white py-2 rounded">{submitLoading ? 'Posting...' : 'Post Event'}</button>
